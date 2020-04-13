@@ -13,7 +13,7 @@ COOKIES = {
 }
 
 # Island eligibility
-MAX_QUEUE_LEN = 50 # Queues that have a shorter wait than MAX_QUEUE_LENGTH
+MAX_QUEUE_LEN = 100 # Queues that have a shorter wait than MAX_QUEUE_LENGTH
 MIN_PRICE = 400 # Islands that buy turnips for over MIN_PRICE
 
 # Code starts here
@@ -26,7 +26,7 @@ def find_new_islands(islands):
     found_island = False
     for island in islands:
         if is_island_eligible(island):
-            print('[{time}] Price: {price}. URL: https://turnip.exchange/island/{code}.'.format(
+            print('[{time}] Price: {price}. URL: turnip.exchange/island/{code}'.format(
                 time=now, price=island['turnipPrice'], code=island['turnipCode']))
             print('\a')
             found_island = True
