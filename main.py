@@ -2,7 +2,8 @@ import requests
 import time
 from datetime import datetime
 
-ISLAND_URL = 'http://api.turnip.exchange/islands'
+# Turnip Exange API
+ISLAND_LIST_ENDPOINT = 'http://api.turnip.exchange/islands'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Safari/605.1.15'}
 COOKIES = {
@@ -11,9 +12,13 @@ COOKIES = {
     'adbe_omni_usr': '840c1450-a7b4-5285-90bf-a0c5afec6b91',
 }
 
+# Island eligibility
+MAX_QUEUE_LEN = 50 # Queues that have a shorter wait than MAX_QUEUE_LENGTH
+MIN_PRICE = 400 # Islands that buy turnips for over MIN_PRICE
+
+# Code starts here
 def is_island_eligible(island):
-    queued = island['queued']
-    return queued < 50 and island['turnipPrice'] > 400
+    return island['queued'] < MAX_QUEUE_LEN and island['turnipPrice'] > MIN_PRICE and island['queued'] < island['maxQueue']
 
 
 def find_new_islands(islands):
@@ -30,9 +35,9 @@ def find_new_islands(islands):
 
 while True:
     now = datetime.now().strftime("%H:%M:%S")
-    data = requests.get(ISLAND_URL, headers=HEADERS, cookies=COOKIES).json()
+    data = requests.get(ISLAND_LIST_ENDPOINT, headers=HEADERS, cookies=COOKIES).json()
     if (data['success'] == False):
         print('[{time}] Request failed.'.format(time=now))
     else:
         find_new_islands(data['islands'])
-    time.sleep(180)
+    time.sleep(120)
